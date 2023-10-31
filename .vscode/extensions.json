@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "Vue.vscode-typescript-vue-plugin",
+    "antfu.iconify", // Iconify Intellisense
+    "Prisma.prisma", // Prisma
+    "bradlc.vscode-tailwindcss" // Tailwind CSS Intellisense
+  ]
+}
