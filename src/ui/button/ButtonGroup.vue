@@ -46,7 +46,7 @@ const buttons = ref([
   },
 ])
 
-function onAiButtonClick(uuid) {
+function onAiButtonClick(uuid: number) {
   buttons.value.forEach((btn) => {
     if (btn.uuid === uuid)
       btn.selected = true
