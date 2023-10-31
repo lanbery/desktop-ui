@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { NConfigProvider, NLoadingBarProvider, NMessageProvider, NNotificationProvider } from 'naive-ui'
 import { useThemeStore } from './store'
+import { AppNavHeader } from '@/layouts'
 
 const themeStore = useThemeStore()
 </script>
@@ -17,19 +19,24 @@ const themeStore = useThemeStore()
       <NLoadingBarProvider>
         <NNotificationProvider>
           <NMessageProvider>
-            <RouterView v-slot="{ Component }">
-              <template v-if="Component">
-                <Transition
-                  name="router"
-                  mode="out-in"
-                >
-                  <component
-                    :is="Component"
-                    class="text-base"
-                  />
-                </Transition>
-              </template>
-            </RouterView>
+            <main class="h-screen w-full overflow-hidden bg-chat-layout">
+              <AppNavHeader />
+              <div class="chat-main container mx-auto pt-10 pb-10">
+                <RouterView v-slot="{ Component }">
+                  <template v-if="Component">
+                    <Transition
+                      name="router"
+                      mode="out-in"
+                    >
+                      <component
+                        :is="Component"
+                        class="text-base"
+                      />
+                    </Transition>
+                  </template>
+                </RouterView>
+              </div>
+            </main>
           </NMessageProvider>
         </NNotificationProvider>
       </NLoadingBarProvider>
@@ -40,7 +47,7 @@ const themeStore = useThemeStore()
 <style scoped lang="scss">
 .router-enter-active,
 .router-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 .router-enter-from,
 .router-leave-to {
@@ -51,5 +58,8 @@ const themeStore = useThemeStore()
   .display-content {
     display: none;
   }
+}
+.chat-main {
+  height: calc(100vh - 84px );
 }
 </style>

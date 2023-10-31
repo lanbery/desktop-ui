@@ -16,6 +16,11 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        muted: '#D9D8D6',
+        silver: '#C2C2C2',
+        slate: '#767A8A',
+      },
       fontFamily: {
         default: [...DEFAULT_FONTS],
       },
@@ -25,6 +30,7 @@ export default {
         'chat-layout': 'linear-gradient(to top right, #ddebfe,#fefeff)',
         'siderbar': 'linear-gradient(to top, #f2f7ff,#f6f8ff)',
         'navitem-actived': 'linear-gradient(to right, #e2e6ff,#f2f6ff)',
+        'ai-draw': 'url("/img/ai_draw_bg.png")',
       },
     },
   },

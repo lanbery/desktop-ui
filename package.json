@@ -12,13 +12,9 @@
     "lint:fix": "eslint . --ext .js,.ts,.vue,.css,.json --fix",
     "commit": "czg"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,vue}": [
-      "eslint --fix"
-    ]
-  },
   "dependencies": {
     "@antfu/eslint-config": "0.43.1",
+    "@iconify/vue": "^4.1.1",
     "axios": "^1.6.0",
     "crypto-js": "^4.2.0",
     "date-fns": "^2.30.0",
@@ -48,5 +44,10 @@
     "vite": "^4.4.5",
     "vite-plugin-pwa": "^0.16.6",
     "vue-tsc": "^1.8.5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --fix"
+    ]
   }
 }

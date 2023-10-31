@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NIcon } from 'naive-ui'
+
 interface Props {
   size: number
   title: string
@@ -9,19 +11,25 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   size: 36,
   actived: false,
-
 })
 </script>
 
 <template>
   <div
-    class="w-full flex flex-start items-center space-x-4 py-6 ps-8" :class="{
+    class="w-full flex flex-start items-center space-x-3 ps-10 cursor-pointer" :class="{
       'bg-navitem-actived': actived,
     }"
+
+    :style="{
+      height: `${size + 30}px`,
+    }"
   >
-    <slot name="icon" />
-    <div>
-      <span>{{ title }} {{ actived }}</span>
+    <NIcon v-if="icon" :size="size">
+      <img :src="icon">
+    </NIcon>
+
+    <div class="text-lg">
+      <span>{{ title }}</span>
     </div>
   </div>
 </template>

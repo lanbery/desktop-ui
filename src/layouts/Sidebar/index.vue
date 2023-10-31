@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { AppLogo, NavRectItem } from '../../ui'
+import aiDrawBg from '@/assets/images/ai_draw_bg.png'
+import aimlTitle from '@/assets/images/aiml_title.png'
+import chatImg from '@/assets/images/icon_chat.png'
+import titleGen from '@/assets/images/icon_text.png'
+import textZip from '@/assets/images/icon_compress.png'
+import textGen from '@/assets/images/icon_generate.png'
 
-const iconSize = 36
+const route = useRoute()
+const router = useRouter()
+const iconSize = 42
 
 interface NavItem {
   id: number
@@ -10,6 +19,7 @@ interface NavItem {
   size: number
   path?: string
   actived: boolean
+  icon?: string
 }
 
 const items: NavItem[] = [
@@ -17,29 +27,33 @@ const items: NavItem[] = [
     id: 1,
     name: '小金AI语言助手',
     size: iconSize,
-    path: '/aaa',
+    path: '/chat/2001',
     actived: true,
+    icon: chatImg,
   },
   {
     id: 2,
     name: '标题生成',
     size: iconSize,
-    path: '/aaa',
+    path: '/aigc/title_gen',
     actived: false,
+    icon: titleGen,
   },
   {
     id: 3,
     name: '长文缩编',
     size: iconSize,
-    path: '/aaa',
+    path: '/aigc/text_zip',
     actived: false,
+    icon: textZip,
   },
   {
     id: 4,
     name: '一键成文',
     size: iconSize,
-    path: '/aaa',
+    path: '/aigc/generate_content',
     actived: false,
+    icon: textGen,
   },
 ]
 
@@ -51,25 +65,35 @@ function onNavItemClick(item: NavItem) {
       it.actived = true
     else it.actived = false
   })
+
+  const currPath = route.fullPath
+
+  if (currPath !== item.path && item.path)
+    router.push(item.path)
 }
 </script>
 
 <template>
-  <div class="loto-app-siderbar h-full w-[320px] relative">
+  <div class="loto-app-siderbar h-full w-[320px] flex flex-col">
     <AppLogo :size="100" name="文广天书" class="pt-10 pb-4" />
-    <div class="item-wrapper">
+    <div class="item-wrapper flex-grow">
       <NavRectItem
         v-for="item in navs"
         :key="item.id"
         :size="item.size"
         :title="item.name"
         :actived="item.actived"
+        :icon="item.icon"
         @click="onNavItemClick(item)"
       />
     </div>
-    <div class="ai-card bottom-0 w-full absolute bottom-0">
-      <div class="h-16 ps-6">
-        AI 马良
+    <div class="ai-card w-full p-3 h-[120px] relative">
+      <div class="bg-ai-draw absolute top-0">
+        <img :src="aiDrawBg">
+      </div>
+      <div class="absolute top-0 w-[2/3] left-[130px] h-full flex flex-col items-start justify-center space-y-3">
+        <img :src="aimlTitle">
+        <span class="text-silver">体验一键妙笔生画</span>
       </div>
     </div>
   </div>
