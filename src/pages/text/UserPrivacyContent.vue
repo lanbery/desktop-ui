@@ -1,0 +1,45 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { privacySections } from './user-priacy'
+
+const items = computed(() => privacySections || [])
+</script>
+
+<template>
+  <div class="h-full max-h-[50vh] w-full overflow-y-auto space-y-4 pt-6">
+    <div v-for="item in items" :key="item.id" class="protocol-section-item">
+      <div v-if="item.section?.length" class="protocol-section-title py-3">
+        <h3>{{ item.section }}</h3>
+      </div>
+      <p class="protocol-section-content">
+        {{ item.content }}
+      </p>
+
+      <div v-if="item?.list?.length" class="block">
+        <p v-for="(p, idx) in item.list" :key="idx">
+          {{ p }}
+        </p>
+      </div>
+    </div>
+
+    <div class="pt-2 pb-4 w-full">
+      <slot name="default" />
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.protocol {
+  &-section {
+    &-item {
+      padding: 0 12px;
+      line-height: 1.5rem;
+    }
+
+    &-title {
+      font-size: 1rem;
+      line-height: 1.25rem;
+    }
+  }
+}
+</style>

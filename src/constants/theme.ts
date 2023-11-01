@@ -6,9 +6,15 @@ export const ligthThemeOverrides: GlobalThemeOverrides = {
     primaryColorHover: '#0078D7',
     primaryColorPressed: '#0078D7',
     primaryColorSuppl: '#0078D7',
+
   },
   Layout: {
     color: 'red',
+  },
+  Scrollbar: {
+    scrollbarColor: {
+      common: '#e5e5fd',
+    },
   },
 }
 

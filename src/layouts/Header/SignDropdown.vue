@@ -12,7 +12,7 @@ const hasLogin = ref<boolean>(true)
 
 function renderIcon(icon: Component, options?: Record<string, any>) {
   return () => {
-    return h(icon, { size: 18, ...options, class: 'me-2' })
+    return h(icon, { size: 18, color: '#424242', ...options, class: 'me-2 text-muted' })
   }
 }
 

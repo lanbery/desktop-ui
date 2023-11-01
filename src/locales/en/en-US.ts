@@ -16,7 +16,9 @@ const error = {
   500100: '该手机{account}已注册',
 }
 
-const page = {}
+const page = {
+  company: '新疆生产建设兵团文广传媒集团有限公司',
+}
 
 export default {
   common,
