@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { darkThemeOverrides, ligthThemeOverrides } from '@/constants'
 import type { Language } from '@/plugins/i18n'
-import { LanguageHelper } from '@/store/helpers'
+import { LanguageHelper } from '@/store/helpers/LanguageHelper'
 import type { Theme } from '@/store/helpers/ThemeHelper'
 import { ThemeLocaleHelper } from '@/store/helpers/ThemeHelper'
 

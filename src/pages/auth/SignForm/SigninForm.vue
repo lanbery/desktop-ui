@@ -150,6 +150,7 @@ function onShowUserProtocol(type: number) {
           :style="{
             ...modalContainerStyle,
           }"
+          class="loto-dialog-content"
         >
           <UserProtocolContent v-if="renderProtocolContent">
             <div class="btn-row w-[196px] mx-auto">
@@ -201,9 +202,9 @@ function onShowUserProtocol(type: number) {
 </template>
 
 <style scoped lang="scss">
-  .loto-dialog-container {
-    width: calc(100vw - 80px);
-  }
+.loto-dialog-container {
+  width: calc(100vw - 80px);
+}
 @media (min-width: 768px) {
   .loto-dialog-container {
     width:85vw;
@@ -218,5 +219,8 @@ function onShowUserProtocol(type: number) {
   .loto-dialog-container {
     width:45vw;
   }
+}
+.loto-dialog-content {
+  min-height: 480px;
 }
 </style>

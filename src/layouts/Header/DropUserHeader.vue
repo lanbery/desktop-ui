@@ -11,6 +11,7 @@ withDefaults(defineProps<Props>(), {
   size: 48,
   fontSize: 16,
 })
+
 const username = ref<string>('可爱哈基米')
 </script>
 
@@ -24,7 +25,7 @@ const username = ref<string>('可爱哈基米')
         fontSize: `${fontSize}px`,
       }"
     >
-      <span>
+      <span class="text-black">
         {{ username }}
       </span>
     </div>

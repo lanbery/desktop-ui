@@ -1,5 +1,6 @@
 // import 'katex/dist/katex.min.css'
 import '@/styles/main.scss'
+import 'nprogress/nprogress.css'
 
 /** Tailwind's Preflight Style Override */
 function naiveStyleOverride() {

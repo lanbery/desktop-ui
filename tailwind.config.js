@@ -21,6 +21,7 @@ export default {
         silver: '#C2C2C2',
         slate: '#767A8A',
         main: '#432fff',
+        navbg: '#e7ecfa',
       },
 
       fontFamily: {

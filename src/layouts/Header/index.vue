@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { NIcon, NImage } from 'naive-ui'
+
 import SignDropdown from './SignDropdown.vue'
 import logo from '@/assets/logo_small.png'
 import appTitle from '@/assets/images/app_title.png'
+
+// import { useAppModalStore } from '@/store'
+
+// const appModalStore = useAppModalStore()
+// const show = computed(() => appModalStore.globalModalShow)
+
+// function modalCloseHandle() {
+//   appModalStore.setGlobalModalHide()
+// }
 </script>
 
 <template>

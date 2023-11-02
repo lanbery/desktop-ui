@@ -1,9 +1,10 @@
 import type { App } from 'vue'
-
+import NProgress from 'nprogress'
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
 import { setupGuard } from './guards'
 
+NProgress.configure({ showSpinner: false })
 export const router = createRouter({
   history: createWebHistory(),
   routes,

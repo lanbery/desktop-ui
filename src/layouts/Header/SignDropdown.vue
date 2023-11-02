@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { h, ref } from 'vue'
-import { NAvatar, NDropdown, useMessage } from 'naive-ui'
+import { computed, h, nextTick, ref } from 'vue'
+import { NAvatar, NDropdown } from 'naive-ui'
+import GlobalModal from '../GlobalModal/index.vue'
 import DropUserHeader from './DropUserHeader.vue'
 import { t } from '@/plugins/i18n'
 import defaultAvatar from '@/assets/avatar_default.png'
 import { LogoutIcon, PhoneIcon, SettingIcon } from '@/ui/Icons'
+import { useAppModalStore } from '@/store'
 
-const ms = useMessage()
-const hasLogin = ref<boolean>(true)
+type GlobalModalType = InstanceType<typeof GlobalModal>
+const appModalStore = useAppModalStore()
 
-function renderIcon(icon: Component, options?: Record<string, any>) {
-  return () => {
-    return h(icon, { size: 18, color: '#424242', ...options, class: 'me-2 text-muted' })
-  }
-}
-
+const globalModalRef = ref<GlobalModalType | null>(null)
 const options = [
   {
     key: 'userHeader',
@@ -28,7 +25,8 @@ const options = [
     icon: renderIcon(SettingIcon),
     props: {
       onClick: () => {
-        ms.warning('HHHHHH')
+        // ms.warning('HHHHHH')
+        appModalStore.setGlobalModalShow('accountSetting')
       },
     },
   },
@@ -36,6 +34,15 @@ const options = [
     key: 'setPhone',
     label: t('menus.setPhone'),
     icon: renderIcon(PhoneIcon),
+    props: {
+      onClick: async () => {
+        appModalStore.setGlobalModalShow('setPhone')
+        await nextTick(() => {
+          if (globalModalRef?.value)
+            (globalModalRef.value as any)?.setNavKey('setPhone')
+        })
+      },
+    },
   },
   {
     key: 'logout',
@@ -45,6 +52,19 @@ const options = [
 ]
 
 const items = ref(options)
+const show = computed(() => appModalStore.globalModalShow)
+
+const hasLogin = ref<boolean>(true)
+
+function renderIcon(icon: Component, options?: Record<string, any>) {
+  return () => {
+    return h(icon, { size: 18, color: '#424242', ...options, class: 'me-2 text-muted' })
+  }
+}
+
+function modalCloseHandle() {
+  appModalStore.setGlobalModalHide()
+}
 </script>
 
 <template>
@@ -63,6 +83,12 @@ const items = ref(options)
         <NAvatar :src="defaultAvatar" :size="48" round />
       </NDropdown>
     </div>
+
+    <GlobalModal
+      ref="globalModalRef"
+      :show="show"
+      @close="modalCloseHandle"
+    />
   </div>
 </template>
 
