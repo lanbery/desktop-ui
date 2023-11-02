@@ -2,15 +2,19 @@
 import type { Component } from 'vue'
 import { computed, h, nextTick, ref } from 'vue'
 import { NAvatar, NDropdown } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import GlobalModal from '../GlobalModal/index.vue'
 import DropUserHeader from './DropUserHeader.vue'
-import { t } from '@/plugins/i18n'
+import { t } from '@/i18n'
 import defaultAvatar from '@/assets/avatar_default.png'
 import { LogoutIcon, PhoneIcon, SettingIcon } from '@/ui/Icons'
-import { useAppModalStore } from '@/store'
+import { useAppModalStore, useAuthStore } from '@/store'
 
 type GlobalModalType = InstanceType<typeof GlobalModal>
+
+const router = useRouter()
 const appModalStore = useAppModalStore()
+const authStore = useAuthStore()
 
 const globalModalRef = ref<GlobalModalType | null>(null)
 const options = [
@@ -48,6 +52,12 @@ const options = [
     key: 'logout',
     label: t('menus.logout'),
     icon: renderIcon(LogoutIcon),
+    props: {
+      onClick: async () => {
+        await authStore.logout()
+        router.push('/login')
+      },
+    },
   },
 ]
 
@@ -102,3 +112,4 @@ function modalCloseHandle() {
   padding-right: 8px;
 }
 </style>
+@/i18n

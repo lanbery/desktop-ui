@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import {
   LockOutlined,
   PhoneAndroidRound, SupervisedUserCircleSharp,
   VerifiedUserOutlined, VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@vicons/material'
-import type { FormInst, FormRules } from 'naive-ui'
-import { NInput } from 'naive-ui'
-import { isPhoneNumber } from '@/validators'
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui'
+import { NInput, useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import { checkPassRule, isPhoneNumber } from '@/validators'
+import type { IRegisteredUser, Response } from '@/api'
+import { registeredAccount, sendCodeForRegistered, userLogin } from '@/api'
+import { OkCode } from '@/api/constants'
+import { t } from '@/i18n'
 
 const inputStyles = {
   '--n-height': '48px',
@@ -22,19 +27,28 @@ const formItemStyle = {
 }
 
 interface ModelType {
-  username: string | null
-  mobile: string | null
-  password: string | null
-  repeat: string | null
-  code: string | null
+  username: string
+  mobile: string
+  password: string
+  repeat: string
+  code: string
 }
 
+const router = useRouter()
+const ms = useMessage()
+
+const ctrlState = ref({
+  loading: false,
+})
+
+const loading = computed(() => ctrlState.value.loading)
+
 const model = ref<ModelType>({
-  username: null,
-  mobile: null,
-  password: null,
-  repeat: null,
-  code: null,
+  username: '',
+  mobile: '',
+  password: '',
+  repeat: '',
+  code: '',
 })
 
 const formRef = ref<FormInst | null>(null)
@@ -57,6 +71,15 @@ const formRules: FormRules = {
   password: [
     {
       required: true,
+      validator(_rule: FormItemRule, value: string) {
+        if (!value)
+          return new Error('请输入密码')
+
+        else if (!checkPassRule(value))
+          return new Error('密码最少大于4个字符')
+
+        return true
+      },
       message: '请输入密码',
       trigger: ['input', 'blur'],
     },
@@ -64,7 +87,8 @@ const formRules: FormRules = {
   repeat: [
     {
       required: true,
-      message: '请输入确认密码',
+      validator: validatePasswordSame,
+      message: '两次密码不一致',
       trigger: ['input', 'blur'],
     },
   ],
@@ -79,7 +103,69 @@ const formRules: FormRules = {
 
 const verifyBtnDisabled = computed(() => !isPhoneNumber(model.value.mobile))
 
-function sendVerifyCodeHandle() {}
+function validatePasswordSame(_rule: FormItemRule, value: string) {
+  return value === model.value.password
+}
+
+async function validParams(): Promise<IRegisteredUser | undefined> {
+  const invalid = await formRef.value?.validate()
+  if (invalid)
+    return
+  const { username, password, mobile, code } = model.value
+
+  return { username, password, mobile, code, name: username }
+}
+
+async function sendVerifyCodeHandle() {
+  try {
+    const phone = model.value.mobile?.trim()
+    if (!phone || !isPhoneNumber(phone))
+      throw new Error('手机号码不正确')
+
+    const { code, result } = await sendCodeForRegistered<Response<boolean>>(phone)
+    if (code === OkCode && result)
+      ms.success('发送成功')
+
+    else
+      ms.warning('发送失败请重试')
+  }
+  catch (e: any) {
+    let msg = e?.message
+    if (e.code)
+      msg = t(`error.${e.code}`, { account: model.value.mobile })
+
+    ms.warning(msg || '发送失败')
+  }
+}
+
+async function onRegisteredHandle() {
+  const params = await validParams()
+  if (!params)
+    return false
+  try {
+    ctrlState.value.loading = true
+    const { code, message, result } = await registeredAccount<Response<CommonUser>>(params)
+    if (code === OkCode && result) {
+      await userLogin({ account: params.mobile, password: params.password })
+      router.replace({ name: 'Root' })
+    }
+    else { throw new Error(message) }
+  }
+  catch (e: any) {
+    let msg = e?.message
+    if (e.code && !msg)
+      msg = t(`error.${e.code}`, { account: model.value.mobile })
+
+    ms.warning(msg || '注册失败')
+  }
+  finally {
+    ctrlState.value.loading = false
+  }
+}
+
+onMounted(() => {
+  Object.assign(model.value, { mobile: '17736576046', username: 'test' })
+})
 </script>
 
 <template>
@@ -179,11 +265,13 @@ function sendVerifyCodeHandle() {}
         <div class="verify-btn ps-5">
           <NButton
             text
+            :loading="loading"
             :disabled="verifyBtnDisabled"
             :style="{
               '--n-color': '#432fff',
               '--n-height': '48px',
               '--n-font-size': '16px',
+              'background-color': 'transparent',
             }"
             @click="sendVerifyCodeHandle"
           >
@@ -194,6 +282,7 @@ function sendVerifyCodeHandle() {}
       <div class="submit-btn">
         <NButton
           block type="primary"
+          :loading="loading"
           :style="{
             '--n-height': '48px',
             '--n-padding': '0 36px',
@@ -201,6 +290,7 @@ function sendVerifyCodeHandle() {}
             '--n-border-radius': '10px',
             '--n-font-size': '18px',
           }"
+          @click="onRegisteredHandle"
         >
           注册
         </NButton>

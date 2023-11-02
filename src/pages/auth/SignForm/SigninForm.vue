@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { FormInst, FormRules } from 'naive-ui'
-import { NInput, NModal } from 'naive-ui'
+import { NInput, NModal, useMessage } from 'naive-ui'
 import {
   CloseRound,
   LockOutlined,
@@ -9,7 +9,11 @@ import {
   VisibilityOffOutlined,
   VisibilityOutlined,
 } from '@vicons/material'
+import { useRouter } from 'vue-router'
 import { UserPrivacyContent, UserProtocolContent } from '@/pages/text'
+import type { ILoginUser } from '@/api/interface'
+import { t } from '@/i18n'
+import { userLogin } from '@/api'
 
 const inputStyles = {
   '--n-height': '48px',
@@ -29,17 +33,23 @@ interface ModelType {
   password: string | null
 }
 
-const ctrlState = reactive({
+// Store
+const ms = useMessage()
+const router = useRouter()
+
+const ctrlState = ref({
+  loading: false,
   modalShow: false,
   modalContentType: 2,
 })
 
-const renderProtocolContent = computed(() => ctrlState.modalContentType === 1)
+const renderProtocolContent = computed(() => ctrlState.value.modalContentType === 1)
+const loading = computed(() => ctrlState.value.loading)
 
-const model: ModelType = {
+const model = ref<ModelType>({
   account: null,
   password: null,
-}
+})
 
 const formRef = ref<FormInst | null>(null)
 const formRules: FormRules = {
@@ -50,7 +60,7 @@ const formRules: FormRules = {
       trigger: ['input', 'blur'],
     },
   ],
-  mobile: [
+  password: [
     {
       required: true,
       message: '请输入密码',
@@ -59,18 +69,56 @@ const formRules: FormRules = {
   ],
 }
 
-function onLoginHandle() {
+async function validParams(): Promise<ILoginUser | undefined> {
+  const invalid = await formRef.value?.validate()
+  if (invalid)
+    return
+  const { account, password } = model.value
 
+  return { account, password }
+}
+
+// function resetForm() {
+//   formRef.value?.restoreValidation()
+//   Object.assign(model.value, {
+//     account: null,
+//     password: null,
+//   })
+// }
+
+async function onLoginHandle() {
+  const params = await validParams()
+  if (!params)
+    return false
+  try {
+    ctrlState.value.loading = true
+    await userLogin(params)
+
+    await router.replace({ name: 'Root' })
+  }
+  catch (e: any) {
+    let msg = e?.message
+    if (e.code)
+      msg = e?.code ? t(`error.${e.code}`, { account: model.value.account }) : e?.message
+    ms.warning(msg || e.message)
+  }
+  finally {
+    ctrlState.value.loading = false
+  }
 }
 
 function onModalCloseHandle() {
-  ctrlState.modalShow = false
+  ctrlState.value.modalShow = false
 }
 
 function onShowUserProtocol(type: number) {
-  ctrlState.modalShow = true
-  ctrlState.modalContentType = type
+  ctrlState.value.modalShow = true
+  ctrlState.value.modalContentType = type
 }
+
+onMounted(() => {
+  Object.assign(model.value, { account: 'test', password: 'user123' })
+})
 </script>
 
 <template>
@@ -78,7 +126,9 @@ function onShowUserProtocol(type: number) {
     <n-form ref="formRef" :model="model" :rules="formRules">
       <n-form-item label-placement="left" path="account">
         <NInput
-          v-model:value="model.account" placeholder="登录账号"
+          v-model:value="model.account"
+          :disabled="loading"
+          placeholder="登录账号"
           :maxlength="64"
           :style="inputStyles"
         >
@@ -92,7 +142,9 @@ function onShowUserProtocol(type: number) {
       </n-form-item>
       <n-form-item label-placement="left" path="password">
         <NInput
-          v-model:value="model.password" placeholder="密码"
+          v-model:value="model.password"
+          :disabled="loading"
+          placeholder="密码"
           show-password-on="mousedown"
           type="password"
           :maxlength="20"
@@ -116,6 +168,7 @@ function onShowUserProtocol(type: number) {
     <div class="submit-btn pt-10 pb-6">
       <NButton
         block type="primary"
+        :loading="loading"
         :style="{
           '--n-height': '48px',
           '--n-padding': '0 36px',

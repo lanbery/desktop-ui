@@ -12,21 +12,23 @@ export interface UserInfo {
   orgName?: string
 }
 
+export const noneUserInfo: UserInfo = {
+  id: 0,
+  username: '',
+  name: '',
+  mobile: '',
+  avatar: '',
+  description: '',
+  orgName: '',
+}
+
 export interface UserState {
   userInfo: UserInfo
 }
 
 export function defaultUserSetting(): UserState {
   return {
-    userInfo: {
-      id: 0,
-      username: '',
-      name: '',
-      mobile: '',
-      avatar: '',
-      description: '',
-      orgName: '',
-    },
+    userInfo: noneUserInfo,
   }
 }
 

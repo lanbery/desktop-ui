@@ -14,7 +14,15 @@ export interface SessionType {
 }
 
 export interface ILoginUser {
-  account: string
+  account: string | null
+  password: string | null
+  code?: string
+}
+
+export interface IRegisteredUser {
+  username: string
+  mobile: string
   password: string
   code?: string
+  name?: string
 }

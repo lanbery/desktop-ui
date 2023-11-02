@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { UserInfo, UserState } from '@/store/helpers/UserStorageHelper'
-import { getLocalState } from '@/store/helpers/UserStorageHelper'
+import { getLocalState, noneUserInfo } from '@/store/helpers/UserStorageHelper'
+import { store } from '@/store'
 
 export const useUserStore = defineStore('user-store', {
   state: () => getLocalState(),
@@ -14,5 +15,12 @@ export const useUserStore = defineStore('user-store', {
     updateUserInfo(userInfo: Partial<UserInfo>) {
       this.userInfo = { ...this.userInfo, ...userInfo }
     },
+    logout(): void {
+      this.userInfo = noneUserInfo
+    },
   },
 })
+
+export function useUserStoreWithOut() {
+  return useUserStore(store)
+}

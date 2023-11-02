@@ -4,10 +4,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { AppLogo, NavRectItem } from '../../ui'
 import aiDrawBg from '@/assets/images/ai_draw_bg.png'
 import aimlTitle from '@/assets/images/aiml_title.png'
-import chatImg from '@/assets/images/icon_chat.png'
-import titleGen from '@/assets/images/icon_text.png'
-import textZip from '@/assets/images/icon_compress.png'
-import textGen from '@/assets/images/icon_generate.png'
+import chatImg from '@/assets/icon/nav_ai_chat.png'
+import titleGen from '@/assets/icon/nav_aigc_title.png'
+import textZip from '@/assets/icon/nav_aigc_zip.png'
+import textGen from '@/assets/icon/nav_aigc_gen.png'
 
 const route = useRoute()
 const router = useRouter()

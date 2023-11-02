@@ -1,5 +1,5 @@
 import { dateEnUS, dateZhCN, enUS, zhCN } from 'naive-ui'
-import type { Language } from '@/plugins/i18n'
+import type { Language } from '@/i18n'
 import { ss } from '@/utils/storage'
 
 export class LanguageHelper {
